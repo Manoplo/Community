@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,11 +18,9 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Auth::routes(['verify'=>'true']);
+Auth::routes(['verify' => 'true']);
 
-Route::group(['middleware' => 'verified'], function(){
+Route::group(['middleware' => 'verified'], function () {
 
-    // Rutas a verificar. 
+    Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 });
-
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
