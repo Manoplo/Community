@@ -24,9 +24,11 @@ Auth::routes(['verify' => 'true']);
 Route::group(['middleware' => 'verified'], function () {
 
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-    /**
-     * 
-     */
+
     Route::get('community', [CommunityLinkController::class, 'index']);
     Route::post('community', [CommunityLinkController::class, 'store']);
+});
+
+Route::get('probando', function () {
+    return response('Error', 404);
 });
