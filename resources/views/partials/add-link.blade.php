@@ -8,23 +8,39 @@
             <div class="form-group">
                 <label for="title">Title:</label>
 
-                <input type="text" class="form-control" id="title" name="title" placeholder="What is the title of your article?">
+                <input type="text" value="{{old('title')}}" class="form-control" id="title" name="title" placeholder="What is the title of your article?">
 
 
             </div>
             @error('title')
-            <p class="text-sm text-red-700">{{$message}}</p>
+            <p class="text-sm text-danger">{{$message}}</p>
             @enderror
 
-            <div class="form-group">
+            <div class=" form-group">
                 <label for="link">Link:</label>
-                <input type="text" class="form-control" id="link" name="link" placeholder="What is the URL?">
+                <input type="text" value="{{old('link')}}" class="form-control" id="link" name="link" placeholder="What is the URL?">
 
             </div>
 
             @error('link')
-            <p class="text-sm text-red-700">{{$message}}</p>
+            <p class="text-sm text-danger">{{$message}}</p>
             @enderror
+
+
+            <div class="form-group">
+                <label for="Channel">Channel</label>
+                <select class="form-control @error('channel_id') is-invalid @enderror" name="channel_id" id="">
+                    <option selected disabled>Pick a channel...</option>
+                    @foreach($channels as $channel)
+                    <option value="{{ $channel->id }}" {{ old('channel_id') == $channel->id ? 'selected' : '' }}>
+                        {{$channel->title}}
+                    </option>
+                    @endforeach
+                </select>
+                @error('channel_id')
+                <span class="text-danger">{{$message}}</span>
+                @enderror
+            </div>
 
             <div class="form-group card-footer">
                 <button class="btn btn-primary">Contribute Link</button>

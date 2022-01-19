@@ -11,6 +11,9 @@
                     {{$link->title}}
                 </a>
                 <small>Contributed by: {{$link->creator->name}} {{$link->updated_at->diffForHumans()}}</small>
+                <span class="label label-default" style="background: {{ $link->channel->color }};  color: {{ $link->channel->color === 'yellow' ? 'black' : 'white' }}; padding: 4px; border-radius: 7px;">
+                    {{$link->channel->title}}
+                </span>
             </li>
             @endforeach
 
