@@ -56,7 +56,7 @@ class CommunityLinkController extends Controller
          * Checkea si el usuario es trusted o no, llamando un método estático creado en el modelo user. 
          */
 
-        $approved = User::isTrusted(Auth::user());
+        $approved = Auth::user()->isTrusted();
 
         /**
          * Merge añade al request parámetros que no trae, como la id del usuario. 
