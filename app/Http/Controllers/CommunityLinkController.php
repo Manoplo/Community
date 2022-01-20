@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Channel;
 use App\Models\CommunityLink;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -17,7 +18,7 @@ class CommunityLinkController extends Controller
     public function index()
     {
 
-        $links = CommunityLink::paginate(25);
+        $links = CommunityLink::where('approved', 1)->paginate(25);
         $channels = Channel::orderBy('title', 'asc')->get();
 
         return view('community.index', compact('links', 'channels'));
@@ -51,14 +52,22 @@ class CommunityLinkController extends Controller
         ]);
 
 
+        /**
+         * Checkea si el usuario es trusted o no, llamando un método estático creado en el modelo user. 
+         */
+
+        $approved = User::isTrusted(Auth::user());
 
         /**
          * Merge añade al request parámetros que no trae, como la id del usuario. 
          */
-        $request->merge(['user_id' => Auth::id()]);
+        $request->merge(['user_id' => Auth::id(), 'approved' => $approved]);
+
         CommunityLink::create($request->all());
 
-        return back();
+        if ($approved) return back()->with('success', 'Link created succesfully');
+
+        return back()->with('warning', 'You must be a trusted user for links to autopublish :)');
     }
 
     /**
