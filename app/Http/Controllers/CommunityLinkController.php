@@ -6,6 +6,7 @@ use App\Models\Channel;
 use App\Models\CommunityLink;
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\Http\Requests\CommunityLinkForm;
 use Illuminate\Support\Facades\Auth;
 
 class CommunityLinkController extends Controller
@@ -18,7 +19,7 @@ class CommunityLinkController extends Controller
     public function index()
     {
 
-        $links = CommunityLink::where('approved', 1)->paginate(25);
+        $links = CommunityLink::where('approved', 1)->latest('updated_at')->paginate(25);
         $channels = Channel::orderBy('title', 'asc')->get();
 
         return view('community.index', compact('links', 'channels'));
@@ -40,18 +41,12 @@ class CommunityLinkController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CommunityLinkForm $request)
     {
 
-
-
-        $request->validate([
-            'title' => 'required',
-            'link' => 'required|active_url|unique:community_links',
-            'channel_id' => 'required|exists:channels,id'
-        ]);
-
-
+        /**
+         * 
+         */
         /**
          * Checkea si el usuario es trusted o no, llamando un método estático creado en el modelo user. 
          */
@@ -59,11 +54,29 @@ class CommunityLinkController extends Controller
         $approved = Auth::user()->isTrusted();
 
         /**
-         * Merge añade al request parámetros que no trae, como la id del usuario. 
+         * Checkeamos si el link ya existe. 
          */
-        $request->merge(['user_id' => Auth::id(), 'approved' => $approved]);
 
-        CommunityLink::create($request->all());
+
+
+        $alreadySubmitted = CommunityLink::hasAlreadyBeenSubmitted($request->link);
+
+        if ($approved && $alreadySubmitted) {
+
+            return back()->with('warning', 'The link already exists. It´ll be uplisted, but contributor won´t change');
+        } else {
+
+            /**
+             * Merge añade al request parámetros que no trae, como la id del usuario. 
+             */
+
+
+            $request->merge(['user_id' => Auth::id(), 'approved' => $approved]);
+            dd($request);
+
+            CommunityLink::create($request->all());
+        }
+
 
         if ($approved) return back()->with('success', 'Link created succesfully');
 
