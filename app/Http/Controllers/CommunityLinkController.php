@@ -44,42 +44,29 @@ class CommunityLinkController extends Controller
     public function store(CommunityLinkForm $request)
     {
 
-        /**
-         * 
-         */
-        /**
-         * Checkea si el usuario es trusted o no, llamando un método estático creado en el modelo user. 
-         */
-
+        // Checkeamos si el user tiene el campo trusted a true
         $approved = Auth::user()->isTrusted();
 
-        /**
-         * Checkeamos si el link ya existe. 
-         */
-
-
-
+        // Checkeamos si el link existe ya en la base de datos
         $alreadySubmitted = CommunityLink::hasAlreadyBeenSubmitted($request->link);
 
+        // Si el usuario es trusted y la variable alreadySubmitted nos ha devuelto un true (con lo que el link ya existía y le ha actualizado los timestamps)
         if ($approved && $alreadySubmitted) {
-
+            // Volvemos advirtiendo al usuario que el link ya existe y que lo hemos puesto arriba. 
             return back()->with('warning', 'The link already exists. It´ll be uplisted, but contributor won´t change');
+
         } else {
 
-            /**
-             * Merge añade al request parámetros que no trae, como la id del usuario. 
-             */
-
-
+            // Mergeamos el request con el usuario autenticado y le pasamos el approved, sea true o false
             $request->merge(['user_id' => Auth::id(), 'approved' => $approved]);
-            dd($request);
-
+            
+            // Guardamos el request en la base de datos
             CommunityLink::create($request->all());
         }
 
-
+        // Si approved nos devolvío true, volvemos con el mensaje de éxito
         if ($approved) return back()->with('success', 'Link created succesfully');
-
+        // Si no, volvemos con el mensaje de que el link está pendiente de aprobación
         return back()->with('warning', 'You must be a trusted user for links to autopublish :)');
     }
 
