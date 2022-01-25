@@ -16,11 +16,20 @@ class CommunityLinkController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Channel $channel = null)
     {
-
-        $links = CommunityLink::where('approved', 1)->latest('updated_at')->paginate(25);
+        // Si el channel no es null
+        if ($channel) {
+            // Traemos los links cuyo channel id esté vinculado con el channel id de la request y que estén aprobados. 
+            $links = CommunityLink::where(['channel_id' => $channel->id, 'approved' => true])->latest()->paginate(25);
+        } else {
+            // Si no, los links que estén aprobados. 
+            $links = CommunityLink::where('approved', 1)->latest('updated_at')->paginate(25);
+        }
+        // Los canales los traemos todos. 
         $channels = Channel::orderBy('title', 'asc')->get();
+
+
 
         return view('community.index', compact('links', 'channels'));
     }
@@ -48,18 +57,19 @@ class CommunityLinkController extends Controller
         $approved = Auth::user()->isTrusted();
 
         // Checkeamos si el link existe ya en la base de datos
-        $alreadySubmitted = CommunityLink::hasAlreadyBeenSubmitted($request->link);
+        $link = new CommunityLink();
+        $alreadySubmitted = $link->hasAlreadyBeenSubmitted($request->link);
+
 
         // Si el usuario es trusted y la variable alreadySubmitted nos ha devuelto un true (con lo que el link ya existía y le ha actualizado los timestamps)
         if ($approved && $alreadySubmitted) {
             // Volvemos advirtiendo al usuario que el link ya existe y que lo hemos puesto arriba. 
             return back()->with('warning', 'The link already exists. It´ll be uplisted, but contributor won´t change');
-
         } else {
 
             // Mergeamos el request con el usuario autenticado y le pasamos el approved, sea true o false
             $request->merge(['user_id' => Auth::id(), 'approved' => $approved]);
-            
+
             // Guardamos el request en la base de datos
             CommunityLink::create($request->all());
         }

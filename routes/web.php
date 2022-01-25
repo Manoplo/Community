@@ -29,6 +29,4 @@ Route::group(['middleware' => 'verified'], function () {
     Route::post('community', [CommunityLinkController::class, 'store']);
 });
 
-Route::get('probando', function () {
-    return response('Error', 404);
-});
+Route::get('/community/{channel}', [CommunityLinkController::class, 'index']);
