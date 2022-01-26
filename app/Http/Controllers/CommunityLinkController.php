@@ -31,7 +31,7 @@ class CommunityLinkController extends Controller
 
 
 
-        return view('community.index', compact('links', 'channels'));
+        return view('community.index', compact('links', 'channels', 'channel'));
     }
 
     /**

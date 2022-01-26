@@ -1,19 +1,7 @@
-@php $url = $_SERVER['REQUEST_URI'];
-$url = explode('/', $url);
-$isMainPage = null;
-
-
-if(isset($url[2])){
-$isMainPage = false;
-} else {
-$isMainPage = true;
-}
-@endphp
-
-@if($isMainPage)
+@if(!$channel)
 <h1>Community</h1>
 @else
-<h1>Community - {{$links[0]->channel->title}} - <a href="/community">All Links</a></h1>
+<h1>Community - {{$channel->title}} - <a href="/community">All Links</a></h1>
 @endif
 
 @if( count($links) === 0 )
