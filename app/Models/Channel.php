@@ -13,6 +13,11 @@ class Channel extends Model
         'title', 'slug', 'color'
     ];
 
+    public function communityLinks()
+    {
+        return $this->hasMany(CommunityLink::class);
+    }
+
 
     public function getRouteKeyName()
     {

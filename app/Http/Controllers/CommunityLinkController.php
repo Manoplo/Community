@@ -21,7 +21,7 @@ class CommunityLinkController extends Controller
         // Si el channel no es null
         if ($channel) {
             // Traemos los links cuyo channel id esté vinculado con el channel id de la request y que estén aprobados. 
-            $links = CommunityLink::where(['channel_id' => $channel->id, 'approved' => true])->latest()->paginate(25);
+            $links = $channel->communityLinks()->where('approved', true)->latest()->paginate(25);
         } else {
             // Si no, los links que estén aprobados. 
             $links = CommunityLink::where('approved', 1)->latest('updated_at')->paginate(25);
