@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\CommunityLinkController;
+use App\Http\Controllers\CommunityLinkUserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,3 +31,7 @@ Route::group(['middleware' => 'verified'], function () {
 });
 
 Route::get('/community/{channel}', [CommunityLinkController::class, 'index']);
+
+// Ruta para votar un link 
+
+Route::post('/votes/{link_id}', [CommunityLinkUserController::class, 'store']);

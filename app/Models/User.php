@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use App\Models\CommunityLinkUser;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -45,5 +46,21 @@ class User extends Authenticatable implements MustVerifyEmail
     public function isTrusted()
     {
         return $this->trusted;
+    }
+
+    public function votes()
+    {
+        // Para acceder a los links que ha votado un usuario, hay que especificarle la clase (CommunityLink) y el nombre de la tabla pivot donde tiene que buscar
+        return $this->belongsToMany(CommunityLink::class, 'community_link_users')->withTimestamps();
+    }
+
+    /**
+     * Checks whether the user has voted on a link
+     * @param CommunityLink $link
+     * @return bool
+     */
+    public function votedFor(CommunityLink $link)
+    {
+        return $this->votes->contains($link);
     }
 }
