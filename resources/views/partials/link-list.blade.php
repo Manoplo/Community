@@ -8,6 +8,15 @@
 <h3>No contributions yet...</h3>
 @endif
 
+<ul class="nav">
+    <li class="nav-item">
+        <a class="nav-link {{ request()->exists('popular') ? '' : 'disabled' }}" href="{{ request()->url() }}">Most recent</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link {{ request()->exists('popular') ? 'disabled' : '' }} " href="?popular">Most popular</a>
+    </li>
+</ul>
+
 @foreach ($links as $link)
 <li class="mb-3">
     <a class="label label-default" style="text-decoration: none; background: {{ $link->channel->color }};  color: {{ $link->channel->color === 'yellow' ? 'black' : 'white' }}; padding: 4px; border-radius: 7px; margin-right: 1em" href="/community/{{$link->channel->slug}}">

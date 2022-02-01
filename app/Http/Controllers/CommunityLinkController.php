@@ -4,9 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Channel;
 use App\Models\CommunityLink;
-use App\Models\User;
+
 use Illuminate\Http\Request;
 use App\Http\Requests\CommunityLinkForm;
+use App\Queries\CommunityLinkQuery;
 use Illuminate\Support\Facades\Auth;
 
 class CommunityLinkController extends Controller
@@ -21,11 +22,15 @@ class CommunityLinkController extends Controller
         // Si el channel no es null
         if ($channel) {
             // Traemos los links cuyo channel id esté vinculado con el channel id de la request y que estén aprobados. 
-            $links = $channel->communityLinks()->where('approved', true)->latest()->paginate(25);
+            $links =  CommunityLinkQuery::getByChannel($channel);
+        } else if (request()->exists('popular')) {
+            // Si existe el string 'popular' en la request, traemos los links ordenados por votos       
+            $links =  CommunityLinkQuery::getMostPopular();
         } else {
-            // Si no, los links que estén aprobados. 
-            $links = CommunityLink::where('approved', 1)->latest('updated_at')->paginate(25);
+            // Dame todos los links que estén aprobados.
+            $links = CommunityLinkQuery::getAll();
         }
+
         // Los canales los traemos todos. 
         $channels = Channel::orderBy('title', 'asc')->get();
 

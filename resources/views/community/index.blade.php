@@ -20,7 +20,7 @@
             </div>
         </div>
     </div>
-    {{$links->links()}}
+    {{$links->appends($_GET)->links()}}
 
 </div>
 
