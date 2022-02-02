@@ -20,10 +20,21 @@ class CommunityLinkController extends Controller
     public function index(Channel $channel = null)
     {
 
-        $clq = new CommunityLinkQuery();
-        // Si el channel no es null
-        if ($channel && request()->exists('popular')) {
 
+        $clq = new CommunityLinkQuery();
+
+        $checkUrl = request()->exists('search') && request()->exists('popular');
+
+        request()->has('search') ? $search = request()->get('search') : $search = null;
+
+        if ($checkUrl) {
+            // Si existe la variable pasada por Qstring y la URL contiene la palabra popular
+            $links = $clq->searchAndPopular($search);
+        } else if ($search) {
+            // Búsqueda normal. 
+            $links = $clq->search($search);
+        } else if ($channel && request()->exists('popular')) {
+            // Ordenamos por canal y por popularidad
             $links = $clq->getMostPopularByChannel($channel);
         } else if ($channel) {
             // Traemos los links cuyo channel id esté vinculado con el channel id de la request y que estén aprobados. 
@@ -41,7 +52,7 @@ class CommunityLinkController extends Controller
 
 
 
-        return view('community.index', compact('links', 'channels', 'channel'));
+        return view('community.index', compact('links', 'channels', 'channel', 'search'));
     }
 
     /**

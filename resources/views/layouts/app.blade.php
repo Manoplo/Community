@@ -20,6 +20,7 @@
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link href="{{ asset('css/styles.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
 </head>
 
@@ -56,6 +57,11 @@
                         </li>
                         @endif
                         @else
+
+                        <form class="d-flex gap-2" method="GET" action="/community">
+                            <input type=" text" name="search" placeholder="Search" value="{{ $search }}" class="form-control">
+                            <button type="submit" class="btn btn-secondary">Search</button>
+                        </form>
                         <li class="nav-item dropdown">
                             <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                 {{ Auth::user()->name }}

@@ -27,4 +27,32 @@ class CommunityLinkQuery
     {
         return CommunityLink::withCount('users')->orderBy('users_count', 'desc')->where('approved', true)->paginate(3);
     }
+
+    public function search($search)
+    {
+        $formattedSearch = preg_split('/\s+/', $search, -1, PREG_SPLIT_NO_EMPTY);
+
+        $values =  CommunityLink::where(function ($q) use ($formattedSearch) {
+            foreach ($formattedSearch as $value) {
+                $q->orWhere('title', 'like', "%{$value}%")->where('approved', true);
+            }
+        })->paginate(3);
+
+        return $values;
+    }
+
+    public function searchAndPopular($search)
+    {
+
+        $formattedSearch = preg_split('/\s+/', $search, -1, PREG_SPLIT_NO_EMPTY);
+
+        $values = CommunityLink::withCount('users')->where(function ($q) use ($formattedSearch) {
+            foreach ($formattedSearch as $value) {
+                $q->orWhere('title', 'like', "%{$value}%");
+            }
+        })->orderBy('users_count', 'desc')->where('approved', true)->paginate(3);
+
+
+        return $values;
+    }
 }
