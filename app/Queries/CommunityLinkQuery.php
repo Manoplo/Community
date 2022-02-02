@@ -8,17 +8,22 @@ use App\Models\CommunityLink;
 
 class CommunityLinkQuery
 {
-    public static function getByChannel(Channel $channel)
+    public function getByChannel(Channel $channel)
     {
         return $channel->communityLinks()->where('approved', true)->latest()->paginate(3);
     }
 
-    public static function getAll()
+    public function getMostPopularByChannel(Channel $channel)
+    {
+        return $channel->communityLinks()->withCount('users')->where('approved', true)->orderBy('users_count', 'desc')->paginate(3);
+    }
+
+    public function getAll()
     {
         return CommunityLink::where('approved', true)->latest()->paginate(3);
     }
 
-    public static function getMostPopular()
+    public function getMostPopular()
     {
         return CommunityLink::withCount('users')->orderBy('users_count', 'desc')->where('approved', true)->paginate(3);
     }

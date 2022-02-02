@@ -19,16 +19,21 @@ class CommunityLinkController extends Controller
      */
     public function index(Channel $channel = null)
     {
+
+        $clq = new CommunityLinkQuery();
         // Si el channel no es null
-        if ($channel) {
+        if ($channel && request()->exists('popular')) {
+
+            $links = $clq->getMostPopularByChannel($channel);
+        } else if ($channel) {
             // Traemos los links cuyo channel id esté vinculado con el channel id de la request y que estén aprobados. 
-            $links =  CommunityLinkQuery::getByChannel($channel);
+            $links =  $clq->getByChannel($channel);
         } else if (request()->exists('popular')) {
             // Si existe el string 'popular' en la request, traemos los links ordenados por votos       
-            $links =  CommunityLinkQuery::getMostPopular();
+            $links =  $clq->getMostPopular();
         } else {
             // Dame todos los links que estén aprobados.
-            $links = CommunityLinkQuery::getAll();
+            $links = $clq->getAll();
         }
 
         // Los canales los traemos todos. 
