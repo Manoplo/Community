@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\CommunityLinkController;
 use App\Http\Controllers\CommunityLinkUserController;
+use Illuminate\Support\Facades\Mail;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -35,3 +37,14 @@ Route::get('/community/{channel}', [CommunityLinkController::class, 'index']);
 // Ruta para votar un link 
 
 Route::post('/votes/{link_id}', [CommunityLinkUserController::class, 'store']);
+
+// Probar el envio de correo
+
+Route::get('/send-mail', function () {
+    $details = [
+        'title' => 'New links created',
+        'body' => 'You have new links created since last visit'
+    ];
+
+    Mail::to('fawexep599@mxclip.com')->send(new \App\Mail\LinkCreated($details));
+});

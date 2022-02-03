@@ -58,8 +58,8 @@
                         @endif
                         @else
 
-                        <form class="d-flex gap-2" method="GET" action="/community">
-                            <input type=" text" name="search" placeholder="Search" value="{{ $search }}" class="form-control">
+                        <form class="d-flex gap-2" action="/community">
+                            <input type=" text" name="search" placeholder="Search" value="{{ $search ?? '' }}" class="form-control">
                             <button type="submit" class="btn btn-secondary">Search</button>
                         </form>
                         <li class="nav-item dropdown">
