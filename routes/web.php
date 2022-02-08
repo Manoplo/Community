@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\CommunityLinkController;
 use App\Http\Controllers\CommunityLinkUserController;
+use App\Http\Controllers\FileController;
 use Illuminate\Support\Facades\Mail;
 
 
@@ -30,6 +31,12 @@ Route::group(['middleware' => 'verified'], function () {
 
     Route::get('community', [CommunityLinkController::class, 'index']);
     Route::post('community', [CommunityLinkController::class, 'store']);
+
+    Route::get('/upload-avatar', function () {
+        return view('community.file-form');
+    });
+
+    Route::post('/upload-file', [FileController::class, 'store']);
 });
 
 Route::get('/community/{channel}', [CommunityLinkController::class, 'index']);
