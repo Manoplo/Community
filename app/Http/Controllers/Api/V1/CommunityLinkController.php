@@ -7,6 +7,7 @@ use App\Http\Requests\CommunityLinkForm;
 use App\Models\CommunityLink;
 use App\Queries\CommunityLinkQuery;
 use Illuminate\Http\Request;
+use PhpParser\Node\Stmt\TryCatch;
 
 class CommunityLinkController extends Controller
 {
@@ -83,11 +84,18 @@ class CommunityLinkController extends Controller
      */
     public function update(Request $request, CommunityLink $communityLink)
     {
+
         $communityLink->title = $request->title;
         $communityLink->link = $request->link;
         $communityLink->channel_id = $request->channel_id;
 
-        $communityLink->save();
+        $result = $communityLink->save();
+        if ($result) {
+
+            return response()->json(['message' => 'Link updated']);
+        } else {
+            return response()->json(['message' => 'There was a problem updating the link']);
+        }
     }
 
     /**
@@ -98,6 +106,13 @@ class CommunityLinkController extends Controller
      */
     public function destroy(CommunityLink $communityLink)
     {
-        $communityLink->delete();
+        $result =  $communityLink->delete();
+
+        if ($result) {
+
+            return response()->json(['message' => 'Link deleted.']);
+        } else {
+            return response()->json(['message' => 'There was a problem deleting the link']);
+        }
     }
 }
