@@ -92,9 +92,9 @@ class CommunityLinkController extends Controller
         $result = $communityLink->save();
         if ($result) {
 
-            return response()->json(['message' => 'Link updated']);
+            return response()->json(['message' => 'Link updated'], 200);
         } else {
-            return response()->json(['message' => 'There was a problem updating the link']);
+            return response()->json(['message' => 'There was a problem updating the link'], 400);
         }
     }
 
@@ -110,9 +110,9 @@ class CommunityLinkController extends Controller
 
         if ($result) {
 
-            return response()->json(['message' => 'Link deleted.']);
+            return response()->json(['message' => 'Link deleted.'], 200);
         } else {
-            return response()->json(['message' => 'There was a problem deleting the link']);
+            return response()->json(['message' => 'There was a problem deleting the link'], 400);
         }
     }
 }

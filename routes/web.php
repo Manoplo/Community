@@ -23,35 +23,40 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::view('/', 'home')->middleware('language');
+
 Auth::routes(['verify' => 'true']);
 
-Route::group(['middleware' => 'verified'], function () {
+Route::group(['middleware' => 'language'], function () {
 
-    Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+    Route::group(['middleware' => 'verified'], function () {
 
-    Route::get('community', [CommunityLinkController::class, 'index']);
-    Route::post('community', [CommunityLinkController::class, 'store']);
+        Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
-    Route::get('/upload-avatar', function () {
-        return view('community.file-form');
+        Route::get('community', [CommunityLinkController::class, 'index']);
+        Route::post('community', [CommunityLinkController::class, 'store']);
+
+        Route::get('/upload-avatar', function () {
+            return view('community.file-form');
+        });
+
+        Route::post('/upload-file', [FileController::class, 'store']);
     });
 
-    Route::post('/upload-file', [FileController::class, 'store']);
-});
+    Route::get('/community/{channel}', [CommunityLinkController::class, 'index']);
 
-Route::get('/community/{channel}', [CommunityLinkController::class, 'index']);
+    // Ruta para votar un link 
 
-// Ruta para votar un link 
+    Route::post('/votes/{link_id}', [CommunityLinkUserController::class, 'store']);
 
-Route::post('/votes/{link_id}', [CommunityLinkUserController::class, 'store']);
+    // Probar el envio de correo
 
-// Probar el envio de correo
+    Route::get('/send-mail', function () {
+        $details = [
+            'title' => 'New links created',
+            'body' => 'You have new links created since last visit'
+        ];
 
-Route::get('/send-mail', function () {
-    $details = [
-        'title' => 'New links created',
-        'body' => 'You have new links created since last visit'
-    ];
-
-    Mail::to('fawexep599@mxclip.com')->send(new \App\Mail\LinkCreated($details));
+        Mail::to('fawexep599@mxclip.com')->send(new \App\Mail\LinkCreated($details));
+    });
 });

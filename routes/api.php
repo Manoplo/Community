@@ -24,4 +24,5 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 // Con este método accedemos a todos los métodos de CommunityLinkController. 
 
 Route::apiResource('v1/communityLinks', CommunityLinkController::class)->middleware('api');
+
 Route::post('v1/communityLinks/login', [LoginController::class, 'login']);
